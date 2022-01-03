@@ -9,6 +9,23 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Set up docker
+        run: |
+          echo "===========================Instalando Docker=========================="
+          sudo apt install -y -qq apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+          sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository \
+          "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) \
+          stable"
+          sudo apt update
+          sudo apt install -y -qq docker-ce docker-ce-cli containerd.io
+          sudo systemctl enable docker
+          
+      - name: Run Container Postgres
+        run: |
+          echo "===========================Instalando Postgres=========================="
+          docker run --name postgresql bitnami/postgresql:latest 
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
